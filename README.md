@@ -1,2 +1,2 @@
 # DSA
-Basic data structures C++ codes
+Data Structures and Algo related problems predominantly in C++.
