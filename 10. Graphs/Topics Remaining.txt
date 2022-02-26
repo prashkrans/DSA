@@ -1,0 +1,5 @@
+Graph topics remaining
+Dinics
+min cut - https://www.hackerearth.com/practice/algorithms/graphs/min-cut/tutorial/
+min cost max flow - https://www.hackerearth.com/practice/algorithms/graphs/minimum-cost-maximum-flow/tutorial/
+NP - hard problems
