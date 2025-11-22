@@ -1,0 +1,34 @@
+/* Binary Tree Prob. # . 
+*/
+
+//	Running time = 
+//	Auxiliary space = 
+
+#include<bits/stdc++.>
+using namespace std;
+
+void rec(int i, vector<int> arr, int currSum, int maxSum) {
+	if(i==arr.size()) {
+		maxSum = max(maxSum, currSum);
+		return;
+	}
+	rec(i+2, arr, currSum+arr[i], maxSum);
+	rec(i+1, arr, currSum, maxSum);
+}
+
+int maxSubsetSum(vector<int> arr) {
+	int currSum, maxSum = 0;
+	rec(0, arr, currSum, maxSum);
+	return maxSum;
+}
+	
+int main() {
+	int n;
+	cin>>n;
+	vector<int> arr(n);
+	for(int i=0; i<n; i++)
+		cin>>arr[i];
+	cout<<"Max sum of a subset = "<<maxSubsetSum(arr);
+	return 0;
+}
+	

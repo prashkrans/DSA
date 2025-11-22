@@ -1,0 +1,112 @@
+5. Friend Function & Friend Class
+
+A friend function/class can access private and protected members of another class in which it is declared as friend.
+
+Properties of a friend function/class:
+1.	If a function is defined as a friend function/class in C++, then the protected and private data of a class can be accessed 
+	as well as modified using the function/class.
+2. 	A class’s friend function is defined outside that class’s scope, but it has the right to access all private and 
+	protected members of the class. 
+3.	Even though the prototypes/function declaration for friend functions appear in the class definition, friends are not 
+	member functions. Thus, they are outside the scope of the class i.e. we cannot access a friend function using obj.funcName();
+4. 	The keyword "friend" is used to declare a friend function/class inside a class whose private access is to be given.
+5.	The function can be then defined anywhere in the program like a normal C++ function. The function "definition" does not use 
+	the keyword friend but uses scope resolution operator in case of a friend function as a method of another class. [#IMP]
+6. 	A friend function/class can be declared in the private or public section of the class.
+7.	A friend function/class cannot access the private and protected data members of the class directly. It needs to make use of a 
+	class object and then access the members using the dot operator. [#IMP]
+8.	A friend function can be a global function or a member of another class.
+9. 	A friend function can be called as a normal function without using the object.
+10.	A friend function is not invoked using the class object as it is not in the class’s scope.
+11.	A friend function can be a global function or a member of another class. [#IMP]
+
+5.1. Friend Function:
+5.1.1. Friend Function as a global function: (Prefer this over 5.1.2.)
+Syntax:
+class <className> {
+	// body of className
+	friend <funcType> <funcName> (<className> &obj);			//	Friend function should only be declared but not defined 
+};																//	Prefer passing <className> obj as a reference.
+
+// whether globally or even another class
+<funcType> <funcName> (<className> obj) {						//	Friend function definition
+	// body of the friend function
+}
+
+E.g. - Friend as a global function
+#include<iostream>
+using namespace std;
+
+class classA {
+	int a;
+public:
+	classA(int a_) : a(a_) {}               //  friend function
+	friend void friendOfA(classA &obj);     //  If we use friend void friendOfA(class obj) here in friend function declaration + line 47
+	void print() {
+        cout<<"Value of a = "<<a<<"\n";
+    }
+};
+
+void friendOfA(classA &obj) {               //  line 41 + void friendOfA(class obj) here in friend function definition we can only access but not modify 'a'
+    cout<<"Accessing and modifying private member 'a' of classA\n";		//	or else would have to use className as return type and return an object
+    obj.a *= 2;
+}
+
+int main() {
+	classA obj(5);
+	obj.print();
+    friendOfA(obj);
+    obj.print();
+	return 0;
+}
+5.1.2. Friend Function as a method of another class (Trickier to understand)
+
+5.2. Friend Class:
+
+Syntax:
+friend class <className>;
+
+class className {
+	// body
+	// can access the private as well as protected members of which it is a friend of using a func(className1 &obj)
+}
+
+E.g. - 
+#include<iostream>
+using namespace std;
+
+class classA {
+	int a;
+public:
+	classA(int a_) : a(a_) {}
+	friend class classB;                        //  friend class
+	void print() {
+        cout<<"Value of a = "<<a<<"\n";
+    }
+};
+
+class classB {
+    int b = 0;
+public:
+    void friendOfA(classA &obj) {               //  and void friendOfA(class obj) we can only access but modify 'a'
+        cout<<"Accessing and modifying private member 'a' of classA\n";
+        obj.a *= 2;
+    }
+};
+
+int main() {
+	classA objA(5);
+	objA.print();
+	classB objB;
+    objB.friendOfA(objA);
+    objA.print();
+	return 0;
+}
+
+
+Following are some important points about friend functions and classes: 
+1.) Friends should be used only for limited purpose. If too many functions or external classes are declared as friends of a class
+	with protected or private data, it lessens the value of encapsulation of separate classes in object-oriented programming.
+2.)	Friendship is not mutual. If class A is a friend of B, then B doesn’t become a friend of A automatically.
+3.)	Friendship is not inherited.
+4.)	Java does not have the concept of friends.

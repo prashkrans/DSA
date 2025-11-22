@@ -1,0 +1,3 @@
+1. Omega, theta, big Oh, small Oh
+2. Running time of recursice function
+	a. Master Theorem

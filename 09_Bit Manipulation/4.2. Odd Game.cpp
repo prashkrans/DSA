@@ -1,0 +1,47 @@
+/* Bit Manipulation Prob. #4.2. Odd Game
+Given an array of length N, starting from 1 to N. At each iteration, you remove all elements at odd positions, until 
+only one element is left. Find the last remaining element.
+gfg - https://practice.geeksforgeeks.org/problems/odd-game5040/1/#
+Example 1:
+Input:
+N = 5
+Output:
+4
+Explanation:
+Initial Array- {1,2,3,4,5}.
+After 1st Iteration- {2,4}.
+After 2nd Interation- {4}
+Therefore, the answer is 4.
+
+This problem basically reduces to the problem of finding the hightest power of 2 which is <= N, 
+which could be solved using 3 methods. (Refer Bit Manip. Prob. 4)
+*/
+
+//	Method 1: i varies as 2^0, 2^1, 2^2, ... 2^k such that 2^k > n, then 2^(k-1) is returned.
+//	Running time = O(log2(n)) i.e. logarithmic time as i takes values in powers of 2
+//	Auxiliary space = O(1) i.e. constant space
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+  public:
+    long long oddGame(long long N) {
+        int i=0, k=0;
+        while(i<=N)
+            i = (1<<k++);
+        return i>>1;
+    }
+};
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        long long N;
+        cin>>N;
+        Solution ob;
+        cout << ob.oddGame(N) << endl;
+    }
+    return 0;
+}

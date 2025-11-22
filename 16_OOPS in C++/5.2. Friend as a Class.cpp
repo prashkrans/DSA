@@ -1,0 +1,32 @@
+// 5.2.1. Friend as a class
+
+#include<iostream>
+using namespace std;
+
+class classA {
+	int a;
+public:
+	classA(int a_) : a(a_) {}
+	friend class classB;                        //  friend class
+	void print() {
+        cout<<"Value of a = "<<a<<"\n";
+    }
+};
+
+class classB {
+    int b = 0;
+public:
+    void friendOfA(classA &obj) {               //  and void friendOfA(class obj) we can only access but modify 'a'
+        cout<<"Accessing and modifying private member 'a' of classA\n";
+        obj.a *= 2;
+    }
+};
+
+int main() {
+	classA objA(5);
+	objA.print();
+	classB objB;
+    objB.friendOfA(objA);
+    objA.print();
+	return 0;
+}

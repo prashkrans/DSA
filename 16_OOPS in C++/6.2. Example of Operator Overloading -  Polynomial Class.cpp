@@ -1,0 +1,227 @@
+/* OOPS Example. #6.2. Polynomial Class using operator overloading
+Implement a polynomial class with the following properties and functions.
+Properties :
+1.  An array of integers (let's say degCoeff) which holds the coefficient and degrees.
+    Use array indices as degree and degCoeff[i] as the coefficient of ith degree.
+2.  An integer holding the total size of array A. (Not important as maxSize is the size of the array)
+Functions :
+1.  Default Constructor
+2.  Copy Constructor: (Choice == 4)
+3.  SetCoefficient:
+    This function sets coefficient for a particular degree value. If the given degree is greater than the current
+    polynomial capacity, increase the capacity accordingly and set the required coefficient. If the degree is within
+    limits, the previous coefficient value is replaced by the given coefficient value (taken care by maxSize)
+4.  Overload "+" Operator (P3 = P1 + P2): (Choice == 1)
+    Adds two polynomials and returns a new polynomial that has the result.
+5.  Overload "-" Operator (P3 = P1 - P2) : (Choice == 2)
+    Subtracts two polynomials and returns a new polynomial which has the result
+6.  Overload * Operator (P3 = P1 * P2) : (Choice == 3)
+    Multiplies two polynomials and returns a new polynomial which has the result
+7.  Overload "=" Operator (Copy Assignment Operator): (Choice == 5)
+    Assigns all values of one polynomial to another.
+8.  Print() -
+Prints all the terms (only terms with non zero coefficients are to be printed) in increasing order of degree.
+Print Pattern For A Single Term : <Coefficient>'x'<Degree>" "
+And multiple terms should be printed separated by space. And after printing one polynomial, print a new line.
+For more clarity, refer to sample test cases.
+Input Format :
+The first line of the input contains an integer N, representing the total number of terms in polynomial P1.
+The second line of the input contains N space-separated integers representing the degree of P1.
+The third line of the input contains N space-separated integers representing coefficients of P1.
+The fourth line of the input contains an integer M, representing the total number of terms in polynomial P2.
+The fifth line of the input contains M space-separated integers representing the degree of P2.
+The sixth line of the input contains M space-separated integers representing coefficients of P2.
+The seventh line of the input contains an integer C, representing the function's choice to be called, i.e., if choice =1 add
+if choice=2 subtract and choice=3 multiply.
+Ouput Format:
+The only line of the output prints all the terms with non-zero coefficients in increasing order of degree.
+Sample Input 1 :
+3
+1 3 5
+1 2 -4
+4
+0 1 2 3
+4 2 -3 1
+1
+Sample Output 1 :
+4x0 3x1 -3x2 3x3 -4x5
+Sample Input 2 :
+3
+1 3 5
+1 2 -4
+4
+0 1 2 3
+4 2 -3 1
+2
+Sample Output 2 :
+-4x0 -1x1 3x2 1x3 -4x5
+Sample Input 3 :
+3
+1 3 5
+1 2 -4
+4
+0 1 2 3
+4 2 -3 1
+3
+Sample Output 3 :
+4x1 2x2 5x3 5x4 -22x5 -6x6 12x7 -4x8
+Sample Input 4:
+3
+1 3 5
+1 2 -4
+4
+0 1 2 3
+4 2 -3 1
+4
+Sample Output 4:
+true
+
+Sample Input 5:
+3
+1 3 5
+1 2 -4
+4
+0 1 2 3
+4 2 -3 1
+5
+Sample Output 5:
+true
+*/
+
+//  Running time = O(maxSize) & not O(max(n,m)) in case of addition and subtraction while O(maxSize^2) & not O(n*m) in case of multiplication.
+//  Auxiliary space = O(maxSize) due to degCoeff
+
+#include<iostream>
+using namespace std;
+
+#define maxSize 100         //  Using a macro to define maxSize as we are not using vectors here whose size can be modified on the go but instead
+                            //  using an array whose size cannot be changed dynamically so, allocated a maxSize for
+class Polynomial {
+public:
+    int * degCoeff; // Name of your array (Don't change this)
+    Polynomial() {
+        degCoeff = new int[maxSize];
+        for(int i=0; i<maxSize; i++) degCoeff[i] = 0;
+    }
+
+    Polynomial(Polynomial &obj) {                           //  [Verify] - An object could be passed to a constructor of its own class only as reference and not value
+        degCoeff = new int[maxSize];                        //  [#IMP]
+        for(int i=0; i<maxSize; i++) degCoeff[i] = 0;
+        for(int i=0; i<maxSize; i++)
+            degCoeff[i] = obj.degCoeff[i];
+    }
+
+    void setCoefficient(int deg, int coeff) {
+        degCoeff[deg] = coeff;
+    }
+
+    Polynomial operator + (Polynomial const &b) {           //  In operator overloading such as c = a + b; or simply a + b. Atmost one argument can be passed
+        Polynomial res;                                     //  as either as className const &b, className &b or className b. But it is a good practice to use
+        for(int i=0; i<maxSize; i++) {                      //  the keyword const to ensure that b is not modified also &b is preferred instead of b as
+            res.degCoeff[i] = degCoeff[i] + b.degCoeff[i];  //  would save space by not creating another copy of b.
+        }                                                   //  Since, we need to overload c = a + b we need a returnable type function followed by operator then
+        return res;                                         //  operator symbol then atmost one argument as className const &obj.
+    }                                                       //  Note - c is represented by res, while b by itself however a is represented by this or no object
+                                                            //  i.e. c.degCoeff == res.degCoeff, b.degCoeff == b.degCoeff, a == this->degCoeff or degCoeff but not a.degCoeff
+     Polynomial operator - (Polynomial const &b) {
+        Polynomial res;
+        for(int i=0; i<maxSize; i++) {
+            res.degCoeff[i] = this->degCoeff[i] - b.degCoeff[i];    //  Demonstrating that both this->degCoeff as well as degCoeff cam be used here
+        }
+        return res;
+    }
+
+    Polynomial operator * (Polynomial const &b) {
+        Polynomial res;
+        for(int i=0; i<maxSize; i++) {              //  i varies for a.degCoeff which is degCoeff or this->degCoeff
+            for(int j=0; j<maxSize; j++) {          //  j varies for b.degCoeff
+                int deg = i+j;
+                if(deg>=maxSize) continue;
+                if(degCoeff[i]!=0 && b.degCoeff[j]!=0)
+                    res.degCoeff[deg] += degCoeff[i] * b.degCoeff[j];   //  This is equivalent to => c.degCoeff[deg] += a.degCoeff[i] * b.degCeoff[j];
+            }
+        }
+        return res;
+    }
+    /*
+    Polynomial operator = (Polynomial const &b) {   //  Overloading assignment operator creates problems in overloading addition, subtraction and multiplication
+        Polynomial res;
+        for(int i=0; i<maxSize; i++) res.degCoeff[i] = b.degCoeff[i];
+        return res;
+    }
+    */
+    void print() {
+        for(int i=0; i<maxSize; i++)
+            if(degCoeff[i]!=0) cout<<degCoeff[i]<<"x"<<i<<" ";
+        cout<<"\n";
+    }
+};
+
+int main() {
+    int count1, count2, choice;
+    cin >> count1;
+    int * degree1 = new int[count1];
+    int * coeff1 = new int[count1];
+    for (int i = 0; i < count1; i++)
+        cin >> degree1[i];
+    for (int i = 0; i < count1; i++)
+        cin >> coeff1[i];
+    Polynomial first;
+    for (int i = 0; i < count1; i++)
+        first.setCoefficient(degree1[i], coeff1[i]);
+    cin >> count2;
+    int * degree2 = new int[count2];
+    int * coeff2 = new int[count2];
+    for (int i = 0; i < count2; i++)
+        cin >> degree2[i];
+    for (int i = 0; i < count2; i++)
+        cin >> coeff2[i];
+    Polynomial second;
+    for (int i = 0; i < count2; i++)
+        second.setCoefficient(degree2[i], coeff2[i]);
+    cin >> choice;
+    //first.print();
+    //second.print();
+    Polynomial result;
+    switch (choice) {
+        // Add
+        case 1:
+            result = first + second;
+            result.print();
+            break;
+            // Subtract
+        case 2:
+            result = first - second;
+            result.print();
+            break;
+            // Multiply
+        case 3:
+            result = first * second;
+            result.print();
+            break;
+
+        case 4: // Copy constructor
+        {
+            Polynomial third(first);
+            if (third.degCoeff == first.degCoeff) {
+                cout << "false" << endl;
+            } else {
+                cout << "true" << endl;
+            }
+            break;
+        }
+        case 5: // Copy assignment operator
+        {
+            Polynomial fourth = first;
+            //first.print();
+            //fourth.print();
+            if (fourth.degCoeff == first.degCoeff) {
+                cout << "false" << endl;
+            } else {
+                cout << "true" << endl;
+            }
+            break;
+        }
+    }
+    return 0;
+}

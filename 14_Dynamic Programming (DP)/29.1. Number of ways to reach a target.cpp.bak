@@ -1,0 +1,21 @@
+#include<iostream>
+using namespace std;
+
+int rec(int n, int k, int start) {
+	if(n<0) return 0;
+	if(n==0) return 1;
+	int sum = 0;
+	for(int i=start; i<n; i++) sum += rec(n-i, k, i);
+	return sum;
+}
+
+int numOfWays(int n, int k) {
+	return rec(n, k, 1);
+}
+
+int main() {
+	int n, k;
+	cin>>n>>k;
+	cout<<numOfWays(n, k);
+	return 0;
+}
